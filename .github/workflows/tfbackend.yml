@@ -1,6 +1,4 @@
 ---
-name: Store TF Backend File
-
 on:
   workflow_call:
 
@@ -34,8 +32,6 @@ on:
 jobs:
 
   tfbackend:
-
-    name: Store TF Backend
 
     runs-on: ${{ inputs.runs-on }}
 
