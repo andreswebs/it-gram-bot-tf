@@ -20,7 +20,7 @@ jobs:
       key: ${{ vars.BACKEND_KEY_DEV }}
       region: ${{ vars.AWS_REGION }}
       filename: dev.s3.tfbackend
-      artifact: tfbackend-dev
+      artifact: dev.s3.tfbackend
 
   tf_plan:
 
@@ -50,7 +50,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ needs.tfbackend.outputs.artifact }}
-          path: ${{ vars.WORKDIR_DEV }}/${{ needs.tfbackend.outputs.filename }}
+          path: ${{ vars.WORKDIR_DEV }}
 
       - name: Check
         run: |
