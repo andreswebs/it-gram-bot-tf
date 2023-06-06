@@ -31,8 +31,12 @@ on:
         type: string
 
     outputs:
-      filename: ${{ jobs.tfbackend.outputs.filename }}
-      artifact: ${{ jobs.tfbackend.outputs.artifact }}
+      filename:
+        description: The filename used to save the backend config
+        value: ${{ jobs.tfbackend.outputs.filename }}
+      artifact:
+        description: Name of the uploaded artifact
+        value: ${{ jobs.tfbackend.outputs.artifact }}
 
 jobs:
 
