@@ -57,3 +57,4 @@ jobs:
           # terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
           pwd
           ls -liah
+          cat ${{ needs.tfbackend.outputs.filename }}
