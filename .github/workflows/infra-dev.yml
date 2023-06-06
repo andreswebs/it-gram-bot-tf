@@ -33,7 +33,7 @@ jobs:
   tf-plan:
     name: TF Plan - dev
     runs-on: ubuntu-latest
-    needs: [ tfbackend ]
+    needs: [ tfbackend, tfvars ]
     defaults:
       run:
         working-directory: ${{ vars.WORKDIR_DEV }}
@@ -82,7 +82,7 @@ jobs:
   tf-apply:
     name: TF Apply - dev
     runs-on: ubuntu-latest
-    needs: [ tfbackend, tf-plan ]
+    needs: [ tfbackend, tfvars, tf-plan ]
     environment: dev
     defaults:
       run:
