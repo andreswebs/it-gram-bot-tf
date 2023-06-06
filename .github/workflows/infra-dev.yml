@@ -13,6 +13,7 @@ on:
 jobs:
 
   tfbackend:
+    name: TF Backend
     uses: ./.github/workflows/tfbackend.yml
     with:
       bucket: ${{ vars.BACKEND_BUCKET }}
@@ -78,7 +79,7 @@ jobs:
         working-directory: ${{ vars.WORKDIR_DEV }}
 
     steps:
-    
+
       - name: Checkout
         uses: actions/checkout@v3
 
