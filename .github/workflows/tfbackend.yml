@@ -42,6 +42,8 @@ jobs:
 
   tfbackend:
 
+    name: Store TF Backend
+
     runs-on: ${{ inputs.runs-on }}
 
     outputs:
@@ -60,8 +62,8 @@ jobs:
           key            = "${{ inputs.key }}"
           region         = "${{ inputs.region }}"
           EOF
-          echo "::set-output name=filename::${{ inputs.filename }}"
-          echo "::set-output name=artifact::${{ inputs.artifact }}"
+          echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
+          echo "artifact=${{ inputs.artifact }}" >> $GITHUB_OUTPUT
 
       - name: Save
         uses: actions/upload-artifact@v3

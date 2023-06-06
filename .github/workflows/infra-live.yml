@@ -26,7 +26,7 @@ jobs:
     needs: tfbackend
     defaults:
       run:
-        working-directory: ${{ vars.WORKDIR_LIVE }}
+        working-directory: ${{ vars.WORKDIR_DEV }}
 
     steps:
 
