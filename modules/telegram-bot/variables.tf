@@ -1,7 +1,7 @@
 variable "service_name" {
   type        = string
   description = "Service name, also used to compose various AWS resource names"
-  default     = "it"
+  default     = "it-gram-bot"
 }
 
 variable "service_description" {
@@ -28,7 +28,7 @@ variable "api_stage" {
   default     = "v1"
 }
 
-variable "function_dir" {
-  type        = string
-  description = "File system path to the directory containing the lambda source code"
+variable "lambda_image_param" {
+  type = string
+  description = "Name of the SSM parameter storing the Lambda container image to deploy"
 }

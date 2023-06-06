@@ -44,7 +44,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Set TF backend config
+      - name: TF Backend Config
         uses: actions/download-artifact@v3
         with:
           name: ${{ needs.tfbackend.outputs.filename }}
@@ -56,9 +56,13 @@ jobs:
 
       - name: TF Plan
         run: |
+          cat > terraform.tfvars <<EOF
+          bot_token_param    = "${{ vars.BOT_TOKEN_PARAM_DEV }}"
+          secret_token_param = "${{ vars.SECRET_TOKEN_PARAM_DEV }}"
+          EOF
           terraform plan -out=dev.tfplan
 
-      - name: Save plan
+      - name: Save Plan
         uses: actions/upload-artifact@v3
         with:
           name: dev.tfplan

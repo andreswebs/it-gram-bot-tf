@@ -4,10 +4,15 @@ locals {
   secret_token_param_arn = "${local.ssm_param_arn_prefix}${var.secret_token_param}"
 }
 
+data "aws_ssm_parameter" "lambda_image" {
+  name            = var.lambda_image_param
+  with_decryption = true
+}
+
 module "lambda" {
   source             = "andreswebs/lambda-container/aws"
   version            = "3.1.0"
-  lambda_image_uri   = ""
+  lambda_image_uri   = data.aws_ssm_parameter.lambda_image.value
   lambda_name_prefix = var.service_name
   lambda_description = var.service_description
   lambda_memory_size = 2048
@@ -17,8 +22,6 @@ module "lambda" {
     SSM_PARAM_TELEGRAM_BOT_TOKEN    = var.bot_token_param
     SSM_PARAM_TELEGRAM_SECRET_TOKEN = var.secret_token_param
   }
-
-  # depends_on = [module.lambda_image]
 
 }
 
