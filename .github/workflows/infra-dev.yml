@@ -104,6 +104,7 @@ jobs:
           cat > terraform.tfvars <<EOF
           bot_token_param    = "${{ vars.BOT_TOKEN_PARAM_DEV }}"
           secret_token_param = "${{ vars.SECRET_TOKEN_PARAM_DEV }}"
+          lambda_image_param = "${{ vars.BOT_WEBHOOK_IMAGE_PARAM }}"
           EOF
           terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
 
