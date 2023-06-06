@@ -1,0 +1,56 @@
+---
+name: Infra
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  tfbackend:
+    uses: ./.github/workflows/tfbackend.yml
+    with:
+      bucket: ${{ vars.BACKEND_BUCKET }}
+      table: ${{ vars.BACKEND_TABLE }}
+      key: ${{ vars.BACKEND_KEY_DEV }}
+      region: ${{ vars.AWS_REGION }}
+      filename: dev.s3.tfbackend
+      artifact: tfbackend-dev
+
+  tf_plan:
+    name: TF Plan - dev
+    runs-on: ubuntu-latest
+    needs: tfbackend
+    defaults:
+      run:
+        working-directory: ${{ vars.WORKDIR_DEV }}
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-session-name: gh-actions
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Set TF backend config
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.tfbackend.outputs.artifact }}
+          path: ${{ vars.WORKDIR_DEV }}/${{ needs.tfbackend.outputs.filename }}
+
+      - name: TF Init
+        run: |
+          terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
