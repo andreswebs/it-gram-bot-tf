@@ -41,9 +41,9 @@ jobs:
         id: render
         run: |
           cat > ./${{ inputs.filename }} << EOF
-          bot_token_param    = "${{ vars.BOT_TOKEN_PARAM_DEV }}"
-          secret_token_param = "${{ vars.SECRET_TOKEN_PARAM_DEV }}"
-          lambda_image_param = "${{ vars.BOT_WEBHOOK_IMAGE_PARAM }}"
+          bot_token_param    = "${{ inputs.bot-token-param }}"
+          secret_token_param = "${{ inputs.secret-token-param }}"
+          lambda_image_param = "${{ inputs.lambda-image-param }}"
           EOF
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
 
