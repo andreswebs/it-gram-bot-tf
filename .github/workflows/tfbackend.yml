@@ -31,8 +31,8 @@ on:
         type: string
 
     outputs:
-      filename: ${{ job.tfbackend.outputs.filename }}
-      artifact: ${{ job.tfbackend.outputs.artifact }}
+      filename: ${{ jobs.tfbackend.outputs.filename }}
+      artifact: ${{ jobs.tfbackend.outputs.artifact }}
 
 jobs:
 
