@@ -42,6 +42,8 @@ jobs:
 
   tfbackend:
 
+    runs-on: ${{ inputs.runs-on }}
+
     outputs:
       filename: ${{ steps.render.outputs.filename }}
       artifact: ${{ steps.render.outputs.artifact }}
