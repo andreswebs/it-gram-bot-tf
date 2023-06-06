@@ -1,0 +1,65 @@
+---
+name: Store TF Backend File
+
+on:
+  workflow_call:
+
+    inputs:
+      runs-on:
+        required: false
+        type: string
+        default: ubuntu-latest
+      filename:
+        required: false
+        type: string
+        default: this.s3.tfbackend
+      artifact:
+        required: false
+        type: string
+        default: tfbackend
+      bucket:
+        required: true
+        type: string
+      table:
+        required: true
+        type: string
+      key:
+        required: true
+        type: string
+      region:
+        required: true
+        type: string
+
+    outputs:
+      filename: ${{ jobs.tfbackend.outputs.filename }}
+      artifact: ${{ jobs.tfbackend.outputs.artifact }}
+
+jobs:
+
+  tfbackend:
+
+    outputs:
+      filename: ${{ steps.render.outputs.filename }}
+      artifact: ${{ steps.render.outputs.artifact }}
+
+    steps:
+
+      - name: Render
+        id: render
+        run: |
+          cat > ./${{ inputs.filename }} << EOF
+          bucket         = "${{ inputs.bucket }}"
+          dynamodb_table = "${{ inputs.table }}"
+          encrypt        = true
+          key            = "${{ inputs.key }}"
+          region         = "${{ inputs.region }}"
+          EOF
+          echo "::set-output name=filename::${{ inputs.filename }}"
+          echo "::set-output name=artifact::${{ inputs.artifact }}"
+
+      - name: Save
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.render.outputs.artifact }}
+          path: ./${{ steps.render.outputs.filename }}
+          if-no-files-found: error

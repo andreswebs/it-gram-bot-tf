@@ -1,0 +1,24 @@
+live/terragrunt.hcl
+.terragrunt-cache
+
+.terraform
+*.tfvars*
+*.tfstate*
+
+*.diff
+*.bak
+*.kubeconfig*
+
+*.tfbackend
+
+config.yml
+config.yaml
+
+!.tfsec/config.yml
+
+# Keep examples
+!**/config.yml.example
+!**/terragrunt.hcl.example
+
+.DS_Store
+.envrc

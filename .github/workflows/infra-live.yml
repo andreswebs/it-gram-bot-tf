@@ -1,0 +1,21 @@
+---
+name: Infra
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  tfbackend:
+    uses: ./.github/workflows/tfbackend.yml
+    with:
+      bucket: ${{ vars.BACKEND_BUCKET }}
+      table: ${{ vars.BACKEND_TABLE }}
+      key: ${{ vars.BACKEND_KEY_LIVE }}
+      region: ${{ vars.BACKEND_REGION }}
