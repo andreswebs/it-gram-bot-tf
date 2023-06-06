@@ -1,5 +1,5 @@
 ---
-name: Infra
+name: Infra - dev
 
 permissions:
   id-token: write
@@ -24,7 +24,7 @@ jobs:
   tf_plan:
     name: TF Plan - dev
     runs-on: ubuntu-latest
-    needs: tfbackend
+    needs: [ tfbackend ]
     defaults:
       run:
         working-directory: ${{ vars.WORKDIR_DEV }}
@@ -52,18 +52,77 @@ jobs:
 
       - name: TF Init
         run: |
-          terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
-
-      - name: TF Plan
-        run: |
           cat > terraform.tfvars <<EOF
           bot_token_param    = "${{ vars.BOT_TOKEN_PARAM_DEV }}"
           secret_token_param = "${{ vars.SECRET_TOKEN_PARAM_DEV }}"
           EOF
+          terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
+
+      - name: TF Plan
+        run: |
           terraform plan -out=dev.tfplan
 
       - name: Save Plan
         uses: actions/upload-artifact@v3
         with:
           name: dev.tfplan
-          path: ${{ vars.WORKDIR_LIVE }}/dev.tfplan
+          path: ${{ vars.WORKDIR_DEV }}/dev.tfplan
+
+  tf_apply:
+    name: TF Apply - dev
+    runs-on: ubuntu-latest
+    needs: [ tfbackend, tf_plan ]
+    environment: dev
+    defaults:
+      run:
+        working-directory: ${{ vars.WORKDIR_DEV }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ vars.IAM_ROLE_ARN }}
+          role-session-name: gh-actions
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-session-name: gh-actions
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: TF Backend Config
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.tfbackend.outputs.filename }}
+          path: ${{ vars.WORKDIR_DEV }}
+
+      - name: TF Init
+        run: |
+          cat > terraform.tfvars <<EOF
+          bot_token_param    = "${{ vars.BOT_TOKEN_PARAM_DEV }}"
+          secret_token_param = "${{ vars.SECRET_TOKEN_PARAM_DEV }}"
+          EOF
+          terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
+
+      - name: Download Plan
+        uses: actions/download-artifact@v3
+        with:
+          name: dev.tfplan
+          path: ${{ vars.WORKDIR_DEV }}
+
+      - name: TF Apply
+        run: |
+          terraform apply -auto-approve dev.tfplan
