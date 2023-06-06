@@ -13,10 +13,6 @@ on:
         required: false
         type: string
         default: this.s3.tfbackend
-      artifact:
-        required: false
-        type: string
-        default: tfbackend
       bucket:
         required: true
         type: string
@@ -34,9 +30,6 @@ on:
       filename:
         description: The filename used to save the backend config
         value: ${{ jobs.tfbackend.outputs.filename }}
-      artifact:
-        description: Name of the uploaded artifact
-        value: ${{ jobs.tfbackend.outputs.artifact }}
 
 jobs:
 
@@ -48,7 +41,6 @@ jobs:
 
     outputs:
       filename: ${{ steps.render.outputs.filename }}
-      artifact: ${{ steps.render.outputs.artifact }}
 
     steps:
 
@@ -63,11 +55,10 @@ jobs:
           region         = "${{ inputs.region }}"
           EOF
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
-          echo "artifact=${{ inputs.artifact }}" >> $GITHUB_OUTPUT
 
       - name: Save
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.render.outputs.artifact }}
+          name: ${{ steps.render.outputs.filename }}
           path: ./${{ steps.render.outputs.filename }}
           if-no-files-found: error

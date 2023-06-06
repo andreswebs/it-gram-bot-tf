@@ -20,10 +20,8 @@ jobs:
       key: ${{ vars.BACKEND_KEY_DEV }}
       region: ${{ vars.AWS_REGION }}
       filename: dev.s3.tfbackend
-      artifact: dev.s3.tfbackend
 
   tf_plan:
-
     name: TF Plan - dev
     runs-on: ubuntu-latest
     needs: tfbackend
@@ -49,12 +47,9 @@ jobs:
       - name: Set TF backend config
         uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.tfbackend.outputs.artifact }}
+          name: ${{ needs.tfbackend.outputs.filename }}
           path: ${{ vars.WORKDIR_DEV }}
 
-      - name: Check
+      - name: TF Init
         run: |
-          # terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
-          pwd
-          ls -liah
-          cat ${{ needs.tfbackend.outputs.filename }}
+          terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
