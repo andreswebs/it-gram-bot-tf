@@ -68,6 +68,7 @@ runs:
       - name: TF Init
         id: tf-init
         shell: bash
+        working-directory: ${{ inputs.working-directory }}
         run: |
           terraform init -backend-config=${{ inputs.tfbackend }}
           echo "tfbackend=${{ inputs.tfbackend }}" >> $GITHUB_OUTPUT
