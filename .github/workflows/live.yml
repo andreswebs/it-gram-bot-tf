@@ -1,5 +1,5 @@
 ---
-name: Infra - dev
+name: Infra - live
 
 permissions:
   id-token: write
@@ -7,53 +7,53 @@ permissions:
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
     paths:
       - 'modules/'
-      - 'envs/dev'
+      - 'envs/live'
       - '.github'
       - '!.github/workflows/live.yml'
 
 jobs:
 
   tfbackend:
-    name: TF Backend - dev
+    name: TF Backend - live
     uses: ./.github/workflows/tfbackend.yml
     with:
       bucket: ${{ vars.BACKEND_BUCKET }}
       table: ${{ vars.BACKEND_TABLE }}
-      key: ${{ vars.BACKEND_KEY_DEV }}
+      key: ${{ vars.BACKEND_KEY_LIVE }}
       region: ${{ vars.AWS_REGION }}
-      filename: dev.s3.tfbackend
+      filename: live.s3.tfbackend
 
   tfvars:
-    name: TF Variables - dev
+    name: TF Variables - live
     uses: ./.github/workflows/tfvars.yml
     with:
-      bot-token-param: ${{ vars.BOT_TOKEN_PARAM_DEV }}
-      secret-token-param: ${{ vars.SECRET_TOKEN_PARAM_DEV }}
-      lambda-image-param: ${{ vars.BOT_WEBHOOK_IMAGE_PARAM_DEV }}
+      bot-token-param: ${{ vars.BOT_TOKEN_PARAM_LIVE }}
+      secret-token-param: ${{ vars.SECRET_TOKEN_PARAM_LIVE }}
+      lambda-image-param: ${{ vars.BOT_WEBHOOK_IMAGE_PARAM_LIVE }}
 
   tf-plan:
-    name: TF Plan - dev
+    name: TF Plan - live
     needs: [ tfbackend, tfvars ]
     uses: ./.github/workflows/tf-plan.yml
     with:
-      working-directory: ${{ vars.WORKDIR_DEV }}
+      working-directory: ${{ vars.WORKDIR_LIVE }}
       role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
       aws-region: ${{ vars.AWS_REGION }}
       tfbackend: ${{ needs.tfbackend.outputs.filename }}
       tfvars: ${{ needs.tfvars.outputs.filename }}
-      filename: dev.tfplan
+      filename: live.tfplan
 
   tf-apply:
-    name: TF Apply - dev
+    name: TF Apply - live
     needs: [ tfbackend, tfvars, tf-plan ]
     uses: ./.github/workflows/tf-apply.yml
     with:
-      environment: dev
-      working-directory: ${{ vars.WORKDIR_DEV }}
+      environment: live
+      working-directory: ${{ vars.WORKDIR_LIVE }}
       role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
       aws-region: ${{ vars.AWS_REGION }}
       tfbackend: ${{ needs.tfbackend.outputs.filename }}
