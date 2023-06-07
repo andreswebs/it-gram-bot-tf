@@ -1,0 +1,75 @@
+---
+name: Terraform Bootstrap for AWS
+
+description: |
+  Sets up the Terraform pre-requisites for a project, including AWS credentials.
+  Depends on specific artifacts being created previously in the pipeline, namely `tfbackend` and `tfvars`.
+  It will download these artifacts to the working directory.
+
+inputs:
+  role-session-name:
+    description: AWS IAM Role session name
+    required: false
+    default: gh-actions
+  role-to-assume:
+    description: AWS IAM Role to assume
+    required: true
+  aws-region:
+    description: AWS Region
+    required: true
+  tfbackend:
+    description: Name of the tfbackend artifact to use
+    required: false
+    default: this.s3.tfbackend
+  tfvars:
+    description: Name of the tfvars artifact to use
+    required: false
+    default: terraform.tfvars
+  working-directory:
+    description: The directory where to run `terraform` commands
+    required: true
+
+outputs:
+  tfbackend:
+    description: Name of the tfbackend file
+    value: ${{ steps.tf-init.outputs.tfbackend }}
+  tfvars:
+    description: Name of the tfvars file
+    value: ${{ steps.tf-init.outputs.tfvars }}
+
+runs:
+
+  using: composite
+
+  steps:
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-session-name: ${{ inputs.role-session-name }}
+          role-to-assume:  ${{ inputs.role-to-assume }}
+          aws-region:  ${{ inputs.aws-region }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: TF Backend
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.tfbackend }}
+          path: ${{ inputs.working-directory }}
+
+      - name: TF Variables
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.tfvars }}
+          path: ${{ inputs.working-directory }}
+
+      - name: TF Init
+        id: tf-init
+        run: |
+          terraform init -backend-config=${{ inputs.tfbackend }}
+          echo "tfbackend=${{ inputs.tfbackend }}" >> $GITHUB_OUTPUT
+          echo "tfvars=${{ inputs.tfvars }}" >> $GITHUB_OUTPUT
+
+## TODO: cache .terraform

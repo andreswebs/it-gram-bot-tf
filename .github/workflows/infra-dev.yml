@@ -43,31 +43,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: TF Bootstrap
+        uses: ./.github/actions/tf-bootstrap
         with:
-          role-session-name: gh-actions
+          working-directory:  ${{ vars.WORKDIR_DEV }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - name: TF Backend
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.tfbackend.outputs.filename }}
-          path: ${{ vars.WORKDIR_DEV }}
-
-      - name: TF Variables
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.tfvars.outputs.filename }}
-          path: ${{ vars.WORKDIR_DEV }}
-
-      - name: TF Init
-        run: |
-          terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
+          tfbackend: ${{ needs.tfbackend.outputs.filename }}
+          tfvars: ${{ needs.tfvars.outputs.filename }}
 
       - name: TF Plan
         run: |
@@ -93,31 +76,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: TF Bootstrap
+        uses: ./.github/actions/tf-bootstrap
         with:
-          role-session-name: gh-actions
+          working-directory:  ${{ vars.WORKDIR_DEV }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - name: TF Backend
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.tfbackend.outputs.filename }}
-          path: ${{ vars.WORKDIR_DEV }}
-
-      - name: TF Variables
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.tfvars.outputs.filename }}
-          path: ${{ vars.WORKDIR_DEV }}
-
-      - name: TF Init
-        run: |
-          terraform init -backend-config=${{ needs.tfbackend.outputs.filename }}
+          tfbackend: ${{ needs.tfbackend.outputs.filename }}
+          tfvars: ${{ needs.tfvars.outputs.filename }}
 
       - name: Download Plan
         uses: actions/download-artifact@v3
