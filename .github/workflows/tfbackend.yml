@@ -40,7 +40,7 @@ jobs:
 
     steps:
 
-      - name: Render
+      - name: Render ${{ inputs.filename }}
         id: render
         run: |
           cat > ./${{ inputs.filename }} << EOF
@@ -52,7 +52,7 @@ jobs:
           EOF
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
 
-      - name: Save
+      - name: Save ${{ steps.render.outputs.filename }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.render.outputs.filename }}
