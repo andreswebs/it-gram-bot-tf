@@ -46,9 +46,9 @@ jobs:
           cat > ./${{ inputs.filename }} << EOF
           bucket         = "${{ inputs.bucket }}"
           dynamodb_table = "${{ inputs.table }}"
-          encrypt        = true
           key            = "${{ inputs.key }}"
           region         = "${{ inputs.region }}"
+          encrypt        = true
           EOF
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
 
