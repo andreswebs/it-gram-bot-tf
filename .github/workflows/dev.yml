@@ -53,4 +53,4 @@ jobs:
       aws-region: ${{ vars.AWS_REGION }}
       tfbackend: ${{ needs.tfbackend.outputs.filename }}
       tfvars: ${{ needs.tfvars.outputs.filename }}
-      tfplan: ${{ needs.tfplan.outputs.filename }}
+      tfplan: ${{ needs.tf-plan.outputs.filename }}

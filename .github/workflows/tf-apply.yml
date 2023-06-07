@@ -56,7 +56,6 @@ jobs:
           path: ${{ inputs.working-directory }}
 
       - name: TF Apply - ${{ inputs.tfplan }}
-        id: tf-apply
         working-directory: ${{ inputs.working-directory }}
         run: |
           terraform apply -auto-approve ${{ inputs.tfplan }}
