@@ -30,7 +30,9 @@ on:
         default: this.tfplan
 
     outputs:
-      filename: ${{ jobs.tf-plan.outputs.filename }}
+      filename:
+        description: The filename used to save the tfplan
+        value: ${{ jobs.tf-plan.outputs.filename }}
 
 jobs:
 
