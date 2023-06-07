@@ -9,11 +9,6 @@ on:
   push:
     tags:
       - '*'
-    paths:
-      - 'modules/'
-      - 'envs/live'
-      - '.github'
-      - '!.github/workflows/live.yml'
 
 jobs:
 
