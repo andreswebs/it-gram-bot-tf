@@ -9,11 +9,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'modules/'
-      - 'envs/dev'
-      - '.github'
-      - '!.github/workflows/live.yml'
 
 jobs:
 
