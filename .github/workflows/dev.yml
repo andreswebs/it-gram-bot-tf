@@ -14,7 +14,7 @@ jobs:
 
   tfbackend:
     name: TF Backend - dev
-    uses: ./.github/workflows/jobs/tfbackend.yml
+    uses: ./.github/workflows/tfbackend.yml
     with:
       bucket: ${{ vars.BACKEND_BUCKET }}
       table: ${{ vars.BACKEND_TABLE }}
