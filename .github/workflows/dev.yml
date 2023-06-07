@@ -35,7 +35,7 @@ jobs:
     needs: [ tfbackend, tfvars ]
     uses: ./.github/workflows/tf-plan.yml
     with:
-      working-directory:  ${{ vars.WORKDIR_DEV }}
+      working-directory: ${{ vars.WORKDIR_DEV }}
       role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
       aws-region: ${{ vars.AWS_REGION }}
       tfbackend: ${{ needs.tfbackend.outputs.filename }}
@@ -44,7 +44,7 @@ jobs:
 
   tf-apply:
     name: TF Apply - dev
-    environment: dev
+    # environment: dev
     needs: [ tfbackend, tfvars, tf-plan ]
     uses: ./.github/workflows/tf-apply.yml
     with:
