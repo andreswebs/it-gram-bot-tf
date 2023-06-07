@@ -1,0 +1,72 @@
+---
+on:
+  workflow_call:
+
+    inputs:
+      runs-on:
+        required: false
+        type: string
+        default: ubuntu-latest
+      working-directory:
+        required: true
+        type: string
+      role-to-assume:
+        required: true
+        type: string
+      aws-region:
+        required: true
+        type: string
+      tfbackend:
+        required: false
+        type: string
+        default: this.s3.tfbackend
+      tfvars:
+        required: false
+        type: string
+        default: terraform.tfvars
+      filename:
+        required: false
+        type: string
+        default: this.tfplan
+
+    outputs:
+      filename:
+        description: The filename used to save the tfplan
+        value: ${{ jobs.tf-plan.outputs.filename }}
+
+jobs:
+
+  tf-plan:
+
+    runs-on: ${{ inputs.runs-on }}
+
+    outputs:
+      filename: ${{ steps.tf-plan.outputs.filename }}
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: TF Bootstrap
+        uses: ./.github/actions/tf-bootstrap
+        with:
+          working-directory: ${{ inputs.working-directory }}
+          role-to-assume: ${{ inputs.role-to-assume }}
+          aws-region: ${{ inputs.aws-region }}
+          tfbackend: ${{ inputs.tfbackend }}
+          tfvars: ${{ inputs.tfvars }}
+
+      - name: TF Plan - ${{ inputs.filename }}
+        id: tf-plan
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          terraform plan -out=${{ inputs.filename }}
+          echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
+
+      - name: Save ${{ steps.tf-plan.outputs.filename }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.tf-plan.outputs.filename }}
+          path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}
+          if-no-files-found: error
