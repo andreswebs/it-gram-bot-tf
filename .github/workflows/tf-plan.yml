@@ -30,7 +30,7 @@ on:
         default: this.tfplan
 
     outputs:
-      filename: ${{ steps.tf-plan.outputs.filename }}
+      filename: ${{ jobs.tf-plan.outputs.filename }}
 
 jobs:
 
