@@ -7,6 +7,9 @@ on:
         required: false
         type: string
         default: ubuntu-latest
+      environment:
+        required: true
+        type: string
       working-directory:
         required: true
         type: string

@@ -44,38 +44,13 @@ jobs:
 
   tf-apply:
     name: TF Apply - dev
-    # environment: dev
     needs: [ tfbackend, tfvars, tf-plan ]
     uses: ./.github/workflows/tf-apply.yml
     with:
+      environment: dev
       working-directory: ${{ vars.WORKDIR_DEV }}
       role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
       aws-region: ${{ vars.AWS_REGION }}
       tfbackend: ${{ needs.tfbackend.outputs.filename }}
       tfvars: ${{ needs.tfvars.outputs.filename }}
-      tfplan: dev.tfplan
-
-    # steps:
-
-    #   - name: Checkout
-    #     uses: actions/checkout@v3
-
-    #   - name: TF Bootstrap
-    #     uses: ./.github/actions/tf-bootstrap
-    #     with:
-    #       working-directory:  ${{ vars.WORKDIR_DEV }}
-    #       role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
-    #       aws-region: ${{ vars.AWS_REGION }}
-    #       tfbackend: ${{ needs.tfbackend.outputs.filename }}
-    #       tfvars: ${{ needs.tfvars.outputs.filename }}
-
-    #   - name: Download Plan
-    #     uses: actions/download-artifact@v3
-    #     with:
-    #       name: ${{ needs.tf-plan.outputs.filename }}
-    #       path: ${{ vars.WORKDIR_DEV }}
-
-    #   - name: TF Apply
-    #     working-directory: ${{ vars.WORKDIR_DEV }}
-    #     run: |
-    #       terraform apply -auto-approve ${{ needs.tf-plan.outputs.filename }}
+      tfplan: ${{ needs.tf-plan.outputs.filename }}
