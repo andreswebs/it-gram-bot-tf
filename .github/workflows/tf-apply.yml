@@ -24,24 +24,16 @@ on:
         required: false
         type: string
         default: terraform.tfvars
-      filename:
+      tfplan:
         required: false
         type: string
         default: this.tfplan
 
-    outputs:
-      filename:
-        description: The filename used to save the tfplan
-        value: ${{ jobs.tf-plan.outputs.filename }}
-
 jobs:
 
-  tf-plan:
+  tf-apply:
 
     runs-on: ${{ inputs.runs-on }}
-
-    outputs:
-      filename: ${{ steps.tf-plan.outputs.filename }}
 
     steps:
 
@@ -57,16 +49,14 @@ jobs:
           tfbackend: ${{ inputs.tfbackend }}
           tfvars: ${{ inputs.tfvars }}
 
-      - name: TF Plan - ${{ inputs.filename }}
-        id: tf-plan
+      - name: Download ${{ inputs.tfplan }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.tfplan }}
+          path: ${{ inputs.working-directory }}
+
+      - name: TF Apply - ${{ inputs.tfplan }}
+        id: tf-apply
         working-directory: ${{ inputs.working-directory }}
         run: |
-          terraform plan -out=${{ inputs.filename }}
-          echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
-
-      - name: Save ${{ steps.tf-plan.outputs.filename }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.tf-plan.outputs.filename }}
-          path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}
-          if-no-files-found: error
+          terraform apply -auto-approve ${{ inputs.tfplan }}
