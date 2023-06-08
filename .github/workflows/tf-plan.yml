@@ -86,20 +86,25 @@ jobs:
           path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}
           if-no-files-found: error
 
-
       - name: Comment
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
         env:
-          PLAN: ${{ steps.plan.outputs.stdout }}
+          PLAN: ${{ steps.tf-plan.outputs.stdout }}
         with:
           script: |
 
-            let output = ''
+            let output
             output += 'Terraform Format and Style `${{ steps.fmt.outcome }}`\n'
             output += 'Terraform Initialization `${{ steps.init.outcome }}`\n'
             output += 'Terraform Validation `${{ steps.validate.outcome }}`\n'
+            output += 'Terraform Plan `${{ steps.tf-plan.outcome }}`'
             output += 'Pushed by @${{ github.actor }}, Action `${{ github.event_name }}`\n'
+            output += '<details><summary>Show Plan</summary>\n'
+            output += '```\n'
+            output += '${process.env.PLAN}'
+            output += '```\n'
+            output += '</details>'
 
             github.rest.issues.createComment({
 
