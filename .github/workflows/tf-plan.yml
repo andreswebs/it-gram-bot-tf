@@ -94,7 +94,7 @@ jobs:
         with:
           script: |
 
-            let output
+            let output = ''
             output += 'Terraform Format and Style `${{ steps.fmt.outcome }}`\n'
             output += 'Terraform Initialization `${{ steps.init.outcome }}`\n'
             output += 'Terraform Validation `${{ steps.validate.outcome }}`\n'

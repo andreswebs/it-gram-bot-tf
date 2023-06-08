@@ -1,5 +1,6 @@
 ---
 name: Infra - live
+run-name: dev
 
 permissions:
   id-token: write
