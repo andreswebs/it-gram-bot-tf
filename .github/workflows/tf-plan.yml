@@ -102,7 +102,7 @@ jobs:
             output += 'Pushed by @${{ github.actor }}, Action `${{ github.event_name }}`\n'
             output += '<details><summary>Show Plan</summary>\n'
             output += '```\n'
-            output += '${process.env.PLAN}'
+            output += process.env.PLAN
             output += '```\n'
             output += '</details>'
 
