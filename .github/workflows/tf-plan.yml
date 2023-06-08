@@ -76,7 +76,7 @@ jobs:
       - name: TF Plan - ${{ inputs.filename }}
         id: tf-plan
         run: |
-          terraform plan -input=false -out=${{ inputs.filename }}
+          terraform plan -input=false -no-color -out=${{ inputs.filename }}
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
 
       - name: Save ${{ steps.tf-plan.outputs.filename }}
@@ -103,6 +103,7 @@ jobs:
             output += '<details><summary>Show Plan</summary>\n'
             output += '```\n'
             output += process.env.PLAN
+            output += '\n'
             output += '```\n'
             output += '</details>'
 
