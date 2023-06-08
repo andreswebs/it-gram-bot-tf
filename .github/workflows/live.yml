@@ -45,6 +45,7 @@ jobs:
     needs: [ tfbackend, tfvars ]
     uses: ./.github/workflows/tf-plan.yml
     with:
+      environment: live
       working-directory: ${{ vars.WORKDIR_LIVE }}
       role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
       aws-region: ${{ vars.AWS_REGION }}

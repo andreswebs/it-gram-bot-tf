@@ -109,7 +109,7 @@ jobs:
             output += process.env.PLAN
             output += '```\n\n'
             output += '</details>\n\n'
-            output += '*Triggered by @${{ github.actor }}, on Action `${{ github.event_name }}`*\n'
+            output += '*Triggered by @${{ github.actor }}, Event `${{ github.event_name }}`*\n'
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
