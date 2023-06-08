@@ -90,7 +90,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
         env:
-          PLAN: ${{ steps.tf-plan.outputs.stdout }}
+          PLAN: ${{ steps.tf-plan.outputs.stdout }}\n
         with:
           script: |
 
@@ -98,14 +98,13 @@ jobs:
             output += 'Terraform Format and Style `${{ steps.fmt.outcome }}`\n'
             output += 'Terraform Initialization `${{ steps.init.outcome }}`\n'
             output += 'Terraform Validation `${{ steps.validate.outcome }}`\n'
-            output += 'Terraform Plan `${{ steps.tf-plan.outcome }}`'
+            output += 'Terraform Plan `${{ steps.tf-plan.outcome }}`\n'
             output += 'Pushed by @${{ github.actor }}, Action `${{ github.event_name }}`\n'
-            output += '<details><summary>Show Plan</summary>\n'
+            output += '<details><summary>Show Plan</summary>\n\n'
             output += '```\n'
             output += process.env.PLAN
-            output += '\n'
-            output += '```\n'
-            output += '</details>'
+            output += '```\n\n'
+            output += '</details>\n'
 
             github.rest.issues.createComment({
 
