@@ -64,11 +64,11 @@ jobs:
 
       - name: TF Format Check
         run: |
-          pwd
           terraform fmt -check
 
       - name: TF Validation
-        run: terraform validate
+        run: |
+          terraform validate
 
       - name: TF Plan - ${{ inputs.filename }}
         id: tf-plan
