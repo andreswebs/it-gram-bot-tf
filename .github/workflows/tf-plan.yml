@@ -90,7 +90,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
         env:
-          PLAN: ${{ steps.tf-plan.outputs.stdout }}\n
+          PLAN: ${{ steps.tf-plan.outputs.stdout }}
         with:
           script: |
 
