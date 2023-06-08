@@ -63,10 +63,12 @@ jobs:
           tfvars: ${{ inputs.tfvars }}
 
       - name: TF Format Check
+        id: fmt
         run: |
           terraform fmt -check
 
       - name: TF Validation
+        id: validate
         run: |
           terraform validate
 
@@ -82,3 +84,29 @@ jobs:
           name: ${{ steps.tf-plan.outputs.filename }}
           path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}
           if-no-files-found: error
+
+
+      - name: Comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        env:
+          PLAN: ${{ steps.plan.outputs.stdout }}
+        with:
+          script: |
+
+            let output
+            output += `Terraform Format and Style \`${{ steps.fmt.outcome }}\``
+            output += `Terraform Initialization \`${{ steps.init.outcome }}\``
+            output += `Terraform Validation \`${{ steps.validate.outcome }}\``
+            
+            github.rest.issues.createComment({
+
+              issue_number: context.issue.number,
+
+              owner: context.repo.owner,
+
+              repo: context.repo.repo,
+
+              body: output
+
+            })
