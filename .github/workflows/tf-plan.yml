@@ -3,6 +3,9 @@ on:
   workflow_call:
 
     inputs:
+      environment:
+        required: false
+        type: string
       runs-on:
         required: false
         type: string
