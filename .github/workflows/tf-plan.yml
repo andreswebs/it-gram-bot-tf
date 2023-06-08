@@ -63,7 +63,9 @@ jobs:
           tfvars: ${{ inputs.tfvars }}
 
       - name: TF Format Check
-        run: terraform fmt -check
+        run: |
+          pwd
+          terraform fmt -check
 
       - name: TF Validation
         run: terraform validate
