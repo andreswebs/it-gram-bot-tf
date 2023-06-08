@@ -11,7 +11,7 @@ on:
       - main
 
   repository_dispatch:
-    types: [ dev-* ]
+    types: [ dev ]
 
 jobs:
 
