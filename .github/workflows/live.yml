@@ -1,9 +1,11 @@
 ---
 name: Infra - live
+run-name: live
 
 permissions:
   id-token: write
   contents: read
+  pull-requests: write
 
 on:
   push:

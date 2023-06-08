@@ -1,9 +1,11 @@
 ---
 name: Infra - dev
+run-name: dev
 
 permissions:
   id-token: write
   contents: read
+  pull-requests: write
 
 on:
   push:
