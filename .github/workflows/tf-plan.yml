@@ -40,6 +40,11 @@ jobs:
 
     runs-on: ${{ inputs.runs-on }}
 
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+
     outputs:
       filename: ${{ steps.tf-plan.outputs.filename }}
 
@@ -57,11 +62,16 @@ jobs:
           tfbackend: ${{ inputs.tfbackend }}
           tfvars: ${{ inputs.tfvars }}
 
+      - name: TF Format Check
+        run: terraform fmt -check
+
+      - name: TF Validation
+        run: terraform validate
+
       - name: TF Plan - ${{ inputs.filename }}
         id: tf-plan
-        working-directory: ${{ inputs.working-directory }}
         run: |
-          terraform plan -out=${{ inputs.filename }}
+          terraform plan -input=false -out=${{ inputs.filename }}
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
 
       - name: Save ${{ steps.tf-plan.outputs.filename }}
