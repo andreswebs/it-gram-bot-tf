@@ -54,6 +54,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: TF Bootstrap
+        id: init
         uses: ./.github/actions/tf-bootstrap
         with:
           working-directory: ${{ inputs.working-directory }}
@@ -95,10 +96,10 @@ jobs:
           script: |
 
             let output = ''
-            output += 'Terraform Format and Style `${{ steps.fmt.outcome }}`'
-            output += 'Terraform Initialization `${{ steps.init.outcome }}`'
-            output += 'Terraform Validation `${{ steps.validate.outcome }}`'
-            output += 'Pushed by @${{ github.actor }}, Action `${{ github.event_name }}`'
+            output += 'Terraform Format and Style `${{ steps.fmt.outcome }}`\n'
+            output += 'Terraform Initialization `${{ steps.init.outcome }}`\n'
+            output += 'Terraform Validation `${{ steps.validate.outcome }}`\n'
+            output += 'Pushed by @${{ github.actor }}, Action `${{ github.event_name }}`\n'
 
             github.rest.issues.createComment({
 
