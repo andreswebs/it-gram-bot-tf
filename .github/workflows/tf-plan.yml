@@ -91,29 +91,26 @@ jobs:
         uses: actions/github-script@v6
         env:
           PLAN: ${{ steps.tf-plan.outputs.stdout }}
+          ENV_COMMENT: '- ${{ inputs.environment }}'
         with:
           script: |
 
             let output = ''
-            output += 'Terraform Format and Style `${{ steps.fmt.outcome }}`\n'
-            output += 'Terraform Initialization `${{ steps.init.outcome }}`\n'
-            output += 'Terraform Validation `${{ steps.validate.outcome }}`\n'
-            output += 'Terraform Plan `${{ steps.tf-plan.outcome }}`\n'
-            output += 'Pushed by @${{ github.actor }}, Action `${{ github.event_name }}`\n'
+            output += `# Terraform Summary ${process.env.ENV_COMMENT}\n\n`
+            output += '#### Format and Style `${{ steps.fmt.outcome }}`\n'
+            output += '#### Initialization `${{ steps.init.outcome }}`\n'
+            output += '#### Validation `${{ steps.validate.outcome }}`\n'
+            output += '#### Plan `${{ steps.tf-plan.outcome }}`\n'
             output += '<details><summary>Show Plan</summary>\n\n'
             output += '```\n'
             output += process.env.PLAN
             output += '```\n\n'
-            output += '</details>\n'
+            output += '</details>\n\n'
+            output += '*Triggered by @${{ github.actor }}, on Action `${{ github.event_name }}`*\n'
 
             github.rest.issues.createComment({
-
               issue_number: context.issue.number,
-
               owner: context.repo.owner,
-
               repo: context.repo.repo,
-
               body: output
-
             })
