@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 module "telegram_bot" {
   source             = "../../modules/telegram-bot"
   service_name       = "imateapot-bot-dev"
