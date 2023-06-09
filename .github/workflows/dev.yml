@@ -13,11 +13,16 @@ on:
   push:
     branches:
       - main
+    paths:
+      - envs/dev/**
+      - modules/**
 
   pull_request:
     branches:
       - main
-
+    paths:
+      - envs/imateapot/**
+      - modules/**
 
   repository_dispatch:
     types: [ dev ]

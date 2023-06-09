@@ -13,11 +13,16 @@ on:
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
+    paths:
+      - envs/imateapot/**
+      - modules/**
 
   pull_request:
     branches:
       - main
-
+    paths:
+      - envs/imateapot/**
+      - modules/**
 
   repository_dispatch:
     types: [ live ]
