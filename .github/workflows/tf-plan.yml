@@ -80,6 +80,7 @@ jobs:
         id: tf-plan
         run: |
           terraform plan -input=false -no-color -out=${{ inputs.filename }}
+          terraform show -json ${{ inputs.filename }} > ${{ inputs.filename }}.json
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
 
       - name: Save ${{ steps.tf-plan.outputs.filename }}
@@ -94,7 +95,7 @@ jobs:
         with:
           soft_fail: true
           framework: terraform
-          file: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}
+          file: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}.json
           output_format: cli,sarif
           output_file_path: console,results.sarif
 
