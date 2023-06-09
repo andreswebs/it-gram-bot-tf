@@ -17,6 +17,9 @@ on:
       secret-token-param:
         required: true
         type: string
+      openai-token-param:
+        required: true
+        type: string
       lambda-image-param:
         required: true
         type: string
