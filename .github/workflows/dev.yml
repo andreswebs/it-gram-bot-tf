@@ -40,6 +40,7 @@ jobs:
     with:
       bot-token-param: ${{ vars.BOT_TOKEN_PARAM_DEV }}
       secret-token-param: ${{ vars.SECRET_TOKEN_PARAM_DEV }}
+      openai-token-param: ${{ vars.OPENAI_TOKEN_PARAM }}
       lambda-image-param: ${{ vars.BOT_WEBHOOK_IMAGE_PARAM_DEV }}
 
   tf-plan:

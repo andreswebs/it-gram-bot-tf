@@ -43,6 +43,7 @@ jobs:
           cat > ./${{ inputs.filename }} << EOF
           bot_token_param    = "${{ inputs.bot-token-param }}"
           secret_token_param = "${{ inputs.secret-token-param }}"
+          openai_token_param = "${{ inputs.openai-token-param }}"
           lambda_image_param = "${{ inputs.lambda-image-param }}"
           EOF
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT

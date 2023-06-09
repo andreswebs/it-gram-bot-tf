@@ -21,6 +21,7 @@ module "lambda" {
   lambda_env_vars = {
     SSM_PARAM_TELEGRAM_BOT_TOKEN    = var.bot_token_param
     SSM_PARAM_TELEGRAM_SECRET_TOKEN = var.secret_token_param
+    SSM_PARAM_OPENAI_TOKEN          = var.openai_token_param
   }
 
 }
