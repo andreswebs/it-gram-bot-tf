@@ -2,6 +2,7 @@ locals {
   ssm_param_arn_prefix   = "arn:${local.aws_partition}:ssm:${local.region}:${local.account_id}:parameter"
   bot_token_param_arn    = "${local.ssm_param_arn_prefix}${var.bot_token_param}"
   secret_token_param_arn = "${local.ssm_param_arn_prefix}${var.secret_token_param}"
+  openai_token_param_arn = "${local.ssm_param_arn_prefix}${var.openai_token_param}"
 }
 
 data "aws_ssm_parameter" "lambda_image" {
@@ -47,6 +48,7 @@ data "aws_iam_policy_document" "lambda_ssm_permissions" {
     resources = [
       local.bot_token_param_arn,
       local.secret_token_param_arn,
+      local.openai_token_param_arn,
     ]
   }
 
