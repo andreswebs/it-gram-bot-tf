@@ -92,8 +92,9 @@ jobs:
       - name: TF Show - ${{ inputs.filename }}
         id: tf-show
         run: |
-          terraform show -json ${{ steps.tf-plan.outputs.filename }}
-
+          curl -L -o jq https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
+          chmod +x ./jq
+          terraform show -json ${{ steps.tf-plan.outputs.filename }} | ./jq '.'
 
       # - name: Checkov
       #   uses: bridgecrewio/checkov-action@v12
