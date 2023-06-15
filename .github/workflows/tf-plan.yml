@@ -31,6 +31,10 @@ on:
         required: false
         type: string
         default: this.tfplan
+      checkov_skip:
+        required: false
+        type: string
+        default: null
 
     outputs:
       filename:
@@ -115,7 +119,7 @@ jobs:
         with:
           soft_fail: true
           file: ${{ inputs.working-directory }}/${{ steps.tf-json.outputs.filename }}
-          skip_check: null
+          skip_check: ${{ inputs.checkov_skip }}
           # skip_check: CKV_AWS_116,CKV_AWS_117,CKV_AWS_173,CKV_AWS_272,CKV_AWS_158,CKV_AWS_338
           output_format: cli,sarif
           output_file_path: console,results.sarif
