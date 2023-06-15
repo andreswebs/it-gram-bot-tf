@@ -105,7 +105,6 @@ jobs:
         uses: bridgecrewio/checkov-action@v12
         with:
           soft_fail: true
-          framework: terraform
           file: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}.json
           output_format: cli,sarif
           output_file_path: console,results.sarif
