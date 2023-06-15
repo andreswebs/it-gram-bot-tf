@@ -92,23 +92,28 @@ jobs:
       - name: TF Show - ${{ inputs.filename }}
         id: tf-show
         run: |
-          curl -L -o jq https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
-          chmod +x ./jq
-          terraform show -json ${{ steps.tf-plan.outputs.filename }} | ./jq '.'
+          terraform show -json ${{ steps.tf-plan.outputs.filename }} > ${{ steps.tf-plan.outputs.filename }}.json
 
-      # - name: Checkov
-      #   uses: bridgecrewio/checkov-action@v12
-      #   with:
-      #     soft_fail: true
-      #     framework: terraform
-      #     file: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}.json
-      #     output_format: cli,sarif
-      #     output_file_path: console,results.sarif
+      - name: Save ${{ steps.tf-plan.outputs.filename }}.json
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.tf-plan.outputs.filename }}.json
+          path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}.json
+          if-no-files-found: error
 
-      # - name: Upload SARIF file
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   with:
-      #     sarif_file: results.sarif
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          soft_fail: true
+          framework: terraform
+          file: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}.json
+          output_format: cli,sarif
+          output_file_path: console,results.sarif
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif
 
       - name: Comment
         if: github.event_name == 'pull_request'
