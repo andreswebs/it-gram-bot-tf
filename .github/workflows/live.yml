@@ -60,6 +60,7 @@ jobs:
       tfbackend: ${{ needs.tfbackend.outputs.filename }}
       tfvars: ${{ needs.tfvars.outputs.filename }}
       filename: live.tfplan
+      checkov_skip: ${{ vars.CHECKOV_SKIP }}
 
   tf-apply:
     if: (startsWith(github.ref, 'refs/tags/') && github.event_name == 'push') || github.event_name == 'repository_dispatch'
