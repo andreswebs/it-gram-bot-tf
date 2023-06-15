@@ -89,6 +89,12 @@ jobs:
           path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}
           if-no-files-found: error
 
+      - name: TF Show - ${{ inputs.filename }}
+        id: tf-show
+        run: |
+          terraform show -json ${{ steps.tf-plan.outputs.filename }} | jq '.' > ${{ steps.tf-plan.outputs.filename }}.json
+          cat ${{ steps.tf-plan.outputs.filename }}.json
+
       # - name: Checkov
       #   uses: bridgecrewio/checkov-action@v12
       #   with:

@@ -10,6 +10,9 @@ permissions:
   security-events: write
 
 on:
+
+  workflow_dispatch:
+
   push:
     branches:
       - main
