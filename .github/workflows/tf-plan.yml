@@ -80,7 +80,7 @@ jobs:
         id: tf-plan
         run: |
           terraform plan -input=false -no-color -out=${{ inputs.filename }}
-          JSON=$(terraform show -json ${{ inputs.filename }} | jq '.')
+          JSON=$(terraform show -json ${{ inputs.filename }})
           echo "${JSON}" > ${{ inputs.filename }}.json
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
 
