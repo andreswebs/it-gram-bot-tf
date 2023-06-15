@@ -92,9 +92,8 @@ jobs:
       - name: TF Show - ${{ inputs.filename }}
         id: tf-show
         run: |
-          terraform show -json ${{ steps.tf-plan.outputs.filename }} | jq '.' > ${{ steps.tf-plan.outputs.filename }}.json
-          ls
-          
+          terraform show -json ${{ steps.tf-plan.outputs.filename }}
+
 
       # - name: Checkov
       #   uses: bridgecrewio/checkov-action@v12
