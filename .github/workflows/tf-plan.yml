@@ -80,8 +80,6 @@ jobs:
         id: tf-plan
         run: |
           terraform plan -input=false -no-color -out=${{ inputs.filename }}
-          JSON=$(terraform show -json ${{ inputs.filename }})
-          echo "${JSON}" > ${{ inputs.filename }}.json
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
 
       - name: Save ${{ steps.tf-plan.outputs.filename }}
@@ -91,25 +89,39 @@ jobs:
           path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}
           if-no-files-found: error
 
-      - name: Save ${{ steps.tf-plan.outputs.filename }}.json
+      - name: TF Show - ${{ steps.tf-plan.outputs.filename }}
+        id: tf-show
+        run: |
+          terraform show -json ${{ steps.tf-plan.outputs.filename }}
+
+      - name: Generate ${{ steps.tf-plan.outputs.filename }}.json
+        id: tf-json
+        env:
+          JSON_CONTENTS: ${{ steps.tf-show.outputs.stdout }}
+          JSON_FILE: ${{ steps.tf-plan.outputs.filename }}.json
+        run: |
+          echo "${JSON_CONTENTS}" | jq '.' > "${JSON_FILE}"
+          echo "filename=${JSON_FILE}" >> $GITHUB_OUTPUT
+
+      - name: Save ${{ steps.tf-json.outputs.filename }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.tf-plan.outputs.filename }}.json
-          path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}.json
+          name: ${{ steps.tf-json.outputs.filename }}
+          path: ${{ inputs.working-directory }}/${{ steps.tf-json.outputs.filename }}
           if-no-files-found: error
 
-      # - name: Checkov
-      #   uses: bridgecrewio/checkov-action@v12
-      #   with:
-      #     soft_fail: true
-      #     file: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}.json
-      #     output_format: cli,sarif
-      #     output_file_path: console,results.sarif
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          soft_fail: true
+          file: ${{ inputs.working-directory }}/${{ steps.tf-json.outputs.filename }}
+          output_format: cli,sarif
+          output_file_path: console,results.sarif
 
-      # - name: Upload SARIF file
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   with:
-      #     sarif_file: results.sarif
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif
 
       - name: Comment
         if: github.event_name == 'pull_request'
