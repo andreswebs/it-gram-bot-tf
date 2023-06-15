@@ -80,6 +80,8 @@ jobs:
         id: tf-plan
         run: |
           terraform plan -input=false -no-color -out=${{ inputs.filename }}
+          JSON=$(terraform show -json ${{ inputs.filename }} | jq '.')
+          echo "${JSON}" > ${{ inputs.filename }}.json
           echo "filename=${{ inputs.filename }}" >> $GITHUB_OUTPUT
 
       - name: Save ${{ steps.tf-plan.outputs.filename }}
@@ -89,18 +91,12 @@ jobs:
           path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}
           if-no-files-found: error
 
-      - name: TF Show - ${{ inputs.filename }}
-        id: tf-show
-        run: |
-          JSON=$(terraform show -json ${{ steps.tf-plan.outputs.filename }})
-          echo "${JSON}"
-
-      # - name: Save ${{ steps.tf-plan.outputs.filename }}.json
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ${{ steps.tf-plan.outputs.filename }}.json
-      #     path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}.json
-      #     if-no-files-found: error
+      - name: Save ${{ steps.tf-plan.outputs.filename }}.json
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.tf-plan.outputs.filename }}.json
+          path: ${{ inputs.working-directory }}/${{ steps.tf-plan.outputs.filename }}.json
+          if-no-files-found: error
 
       # - name: Checkov
       #   uses: bridgecrewio/checkov-action@v12
